@@ -1,0 +1,209 @@
+{
+  "version": 6,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 23,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "base",
+      "hidden": true,
+      "binaryDir": "${sourceDir}/out/build/${presetName}",
+      "installDir": "${sourceDir}/out/install/${presetName}",
+      "generator": "Ninja",
+      "cacheVariables": {
+        "CMAKE_EXPORT_COMPILE_COMMANDS": true,
+        "CMAKE_TOOLCHAIN_FILE": {
+          "value": "$env{VCPKG_INSTALLATION_ROOT}/scripts/buildsystems/vcpkg.cmake",
+          "type": "FILEPATH"
+        },
+        "VCPKG_INSTALL_OPTIONS": "--x-abi-tools-use-exact-versions"
+      },
+      "environment": {
+        "VCPKG_FEATURE_FLAGS": "-compilertracking"
+      }
+    },
+    {
+      "name": "debug",
+      "inherits": "base",
+      "hidden": true,
+      "description": "Debug Builds",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    },
+    {
+      "name": "release",
+      "inherits": "base",
+      "hidden": true,
+      "description": "Release Builds",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+      }
+    },
+    {
+      "name": "msvc",
+      "hidden": true,
+      "architecture": {
+        "value": "x64",
+        "strategy": "external"
+      },
+      "toolset": {
+        "value": "host=x64",
+        "strategy": "external"
+      },
+      "cacheVariables": {
+        "CMAKE_CXX_COMPILER": "cl"
+      },
+      "vendor": {
+        "microsoft.com/VisualStudioSettings/CMake/1.0": {
+          "hostOS": [
+            "Windows"
+          ]
+        }
+      },
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      }
+    },
+    {
+      "name": "linux",
+      "hidden": true,
+      "vendor": {
+        "microsoft.com/VisualStudioSettings/CMake/1.0": {
+          "hostOS": [
+            "Linux"
+          ]
+        }
+      },
+      "cacheVariables": {
+        "CMAKE_SHARED_LINKER_FLAGS": "-Wl,-Bsymbolic"
+      },
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Linux"
+      }
+    },
+    {
+      "name": "clang",
+      "inherits": "linux",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_CXX_COMPILER": "clang++"
+      }
+    },
+    {
+      "name": "gcc",
+      "inherits": "linux",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_CXX_COMPILER": "g++"
+      }
+    },
+    {
+      "name": "msvc-debug",
+      "inherits": [
+        "msvc",
+        "debug"
+      ],
+      "cacheVariables": {
+          "VCPKG_TARGET_TRIPLET": "x64-windows"
+      }
+    },
+    {
+      "name": "msvc-release",
+      "inherits": [
+        "msvc",
+        "release"
+      ],
+      "cacheVariables": {
+          "VCPKG_TARGET_TRIPLET": "x64-windows-release"
+      }
+    },
+    {
+      "name": "clang-debug",
+      "inherits": [
+        "clang",
+        "debug"
+      ],
+      "cacheVariables": {
+          "VCPKG_TARGET_TRIPLET": "x64-linux"
+      }
+    },
+    {
+      "name": "clang-release",
+      "inherits": [
+        "clang",
+        "release"
+      ],
+      "cacheVariables": {
+          "VCPKG_TARGET_TRIPLET": "x64-linux-release"
+      }
+    },
+    {
+      "name": "gcc-debug",
+      "inherits": [
+        "gcc",
+        "debug"
+      ],
+      "cacheVariables": {
+          "VCPKG_TARGET_TRIPLET": "x64-linux"
+      }
+    },
+    {
+      "name": "gcc-release",
+      "inherits": [
+        "gcc",
+        "release"
+      ],
+      "cacheVariables": {
+          "VCPKG_TARGET_TRIPLET": "x64-linux-release"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "base",
+      "hidden": true,
+      "verbose": true,
+      "nativeToolOptions": [
+        "-k",
+        "0"
+      ]
+    },
+    {
+      "name": "msvc-debug",
+      "configurePreset": "msvc-debug",
+      "inherits": "base"
+    },
+    {
+      "name": "msvc-release",
+      "configurePreset": "msvc-release",
+      "inherits": "base"
+    },
+    {
+      "name": "clang-debug",
+      "configurePreset": "clang-debug",
+      "inherits": "base"
+    },
+    {
+      "name": "clang-release",
+      "configurePreset": "clang-release",
+      "inherits": "base"
+    },
+    {
+      "name": "gcc-debug",
+      "configurePreset": "gcc-debug",
+      "inherits": "base"
+    },
+    {
+      "name": "gcc-release",
+      "configurePreset": "gcc-release",
+      "inherits": "base"
+    }
+  ]
+}
